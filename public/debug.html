@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Gemee Strategy Game</title>
+</head>
+<body>
+    <h1>Debug Page</h1>
+    <button id="createGameBtn" class="btn primary">Create Game</button>
+    <div id="messages"></div>
+    
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        console.log('Debug script loaded');
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            console.log('DOM loaded');
+            
+            const createBtn = document.getElementById('createGameBtn');
+            console.log('Create button found:', createBtn);
+            
+            if (createBtn) {
+                createBtn.addEventListener('click', () => {
+                    console.log('Button clicked!');
+                    document.getElementById('messages').innerHTML += '<p>Button clicked!</p>';
+                    
+                    // Test Socket.IO connection
+                    const socket = io();
+                    console.log('Socket created:', socket);
+                    
+                    socket.on('connect', () => {
+                        console.log('Connected to server');
+                        document.getElementById('messages').innerHTML += '<p>Connected to server!</p>';
+                        
+                        // Test create game
+                        socket.emit('createGame');
+                        document.getElementById('messages').innerHTML += '<p>Sent createGame event</p>';
+                    });
+                    
+                    socket.on('gameCreated', (data) => {
+                        console.log('Game created:', data);
+                        document.getElementById('messages').innerHTML += `<p>Game created! ID: ${data.gameId}</p>`;
+                    });
+                    
+                    socket.on('error', (data) => {
+                        console.error('Error:', data);
+                        document.getElementById('messages').innerHTML += `<p>Error: ${data.message}</p>`;
+                    });
+                    
+                    socket.on('connect_error', (error) => {
+                        console.error('Connection error:', error);
+                        document.getElementById('messages').innerHTML += `<p>Connection error: ${error.message}</p>`;
+                    });
+                });
+            } else {
+                console.error('Create button not found!');
+                document.getElementById('messages').innerHTML += '<p>ERROR: Create button not found!</p>';
+            }
+        });
+    </script>
+</body>
+</html>

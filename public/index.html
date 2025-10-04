@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemee Strategy Game</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="app">
+        <!-- Lobby Screen -->
+        <div id="lobby" class="screen">
+            <h1>Gemee Strategy Game</h1>
+            <div class="lobby-actions">
+                <button id="createGameBtn" class="btn primary">Create Game</button>
+                <div class="join-section">
+                    <input type="text" id="gameIdInput" placeholder="Enter Game ID">
+                    <button id="joinGameBtn" class="btn secondary">Join Game</button>
+                </div>
+            </div>
+            <div id="gameIdDisplay" class="game-id-display" style="display: none;">
+                <h3>Game ID: <span id="gameIdText"></span></h3>
+                <p>Share this ID with your opponent!</p>
+            </div>
+        </div>
+
+        <!-- Game Screen -->
+        <div id="game" class="screen" style="display: none;">
+            <div class="game-header">
+                <div class="player-info">
+                    <h3>Player: <span id="playerId"></span></h3>
+                    <div class="energy">Energy: <span id="energyDisplay">10</span></div>
+                </div>
+                <div class="turn-info">
+                    <h3>Turn: <span id="currentTurn"></span></h3>
+                    <button id="endTurnBtn" class="btn">End Turn</button>
+                </div>
+            </div>
+            
+            <div class="game-content">
+                <div class="game-board">
+                    <canvas id="gameCanvas" width="640" height="640"></canvas>
+                </div>
+                
+                <div class="game-controls">
+                    <div class="unit-selection">
+                        <h4>Deploy Units</h4>
+                        <div class="unit-buttons">
+                            <button class="unit-btn" data-type="melee">
+                                <div class="unit-icon melee">⚔️</div>
+                                <div class="unit-info">
+                                    <div class="unit-name">Melee</div>
+                                    <div class="unit-cost">Cost: 2</div>
+                                </div>
+                            </button>
+                            <button class="unit-btn" data-type="ranged">
+                                <div class="unit-icon ranged">🏹</div>
+                                <div class="unit-info">
+                                    <div class="unit-name">Ranged</div>
+                                    <div class="unit-cost">Cost: 3</div>
+                                </div>
+                            </button>
+                            <button class="unit-btn" data-type="medic">
+                                <div class="unit-icon medic">⚕️</div>
+                                <div class="unit-info">
+                                    <div class="unit-name">Medic</div>
+                                    <div class="unit-cost">Cost: 4</div>
+                                </div>
+                            </button>
+                            <button class="unit-btn" data-type="guardian">
+                                <div class="unit-icon guardian">🛡️</div>
+                                <div class="unit-info">
+                                    <div class="unit-name">Guardian</div>
+                                    <div class="unit-cost">Cost: 5</div>
+                                </div>
+                            </button>
+                            <button class="unit-btn" data-type="generator">
+                                <div class="unit-icon generator">⚡</div>
+                                <div class="unit-info">
+                                    <div class="unit-name">Generator</div>
+                                    <div class="unit-cost">Cost: 6</div>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="game-status">
+                        <div id="selectedUnit" class="selected-unit">
+                            <p>Click a unit to select it</p>
+                        </div>
+                        <div id="gameMessages" class="game-messages"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Victory Modal -->
+        <div id="victoryModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <h2 id="victoryTitle">Victory!</h2>
+                <p id="victoryMessage">Congratulations! You have won the game!</p>
+                <button id="playAgainBtn" class="btn primary">Play Again</button>
+                <button id="backToLobbyBtn" class="btn secondary">Back to Lobby</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="game.js"></script>
+</body>
+</html>
