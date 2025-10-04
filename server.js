@@ -83,6 +83,7 @@ class Game {
     this.units = new Map();
     this.nextUnitId = 1;
     this.energy = new Map();
+    this.turnNumber = 0; // Track how many turns have passed
   }
 
   initializeGrid() {
@@ -274,6 +275,9 @@ class Game {
   endTurn(playerId) {
     if (this.gameState !== 'playing' || this.currentTurn !== playerId) return false;
     
+    // Increment turn counter
+    this.turnNumber++;
+    
     // --- MODIFIED: Process status effects at end of turn ---
     for (let [unitId, unit] of this.units) {
       // Reset actions for the player whose turn just ended
@@ -347,9 +351,9 @@ class Game {
     const player1Units = Array.from(this.units.values()).filter(u => u.owner === playerIds[0]);
     const player2Units = Array.from(this.units.values()).filter(u => u.owner === playerIds[1]);
 
-    // Only check win condition after both players have deployed at least one unit
-    const totalUnits = player1Units.length + player2Units.length;
-    if (totalUnits === 0) return;
+    // Only check win condition after both players have had at least 2 turns each
+    // (so both players have had a chance to deploy units and play)
+    if (this.turnNumber < 4) return; // 4 turns = 2 turns each player
 
     if (player1Units.length === 0) {
       this.gameState = 'finished';
