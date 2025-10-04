@@ -360,7 +360,6 @@ class Game {
   }
 
   processTurnBasedCombat() {
-    // ... (This method remains unchanged)
     const units = Array.from(this.units.values());
     const combatPairs = [];
     
@@ -369,7 +368,10 @@ class Game {
         const unit1 = units[i];
         const unit2 = units[j];
         
-        if (unit1.owner !== unit2.owner && this.areAdjacent(unit1, unit2)) {
+        // Only fight if they're enemies, adjacent, AND haven't attacked this turn
+        if (unit1.owner !== unit2.owner && 
+            this.areAdjacent(unit1, unit2) && 
+            !unit1.hasAttacked && !unit2.hasAttacked) {
           combatPairs.push([unit1, unit2]);
         }
       }
