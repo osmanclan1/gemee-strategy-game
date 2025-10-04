@@ -190,7 +190,11 @@ class GameClient {
         } else if (this.selectedUnitType) {
             this.deployUnit(x, y);
         } else if (this.selectedUnit) {
+            // Only move if we haven't just attacked (selectedUnit shouldn't be null after attack)
+            console.log('Attempting to move unit:', this.selectedUnit.id, 'from', this.selectedUnit.x, this.selectedUnit.y, 'to:', x, y);
             this.moveUnit(x, y);
+        } else {
+            console.log('No action - no unit selected at:', x, y);
         }
     }
     
@@ -205,7 +209,10 @@ class GameClient {
             this.addMessage(`Selected ${unit.type} unit (Health: ${unit.health}/${unit.maxHealth})`);
         } else if (this.selectedUnit && this.selectedUnit.owner === this.playerId) {
             // Attack enemy unit
+            console.log('Attacking enemy unit:', unit.id, 'with attacker:', this.selectedUnit.id);
             this.attackUnit(unit.id);
+            // Don't continue processing - attack is complete
+            return;
         }
         this.updateSelectedUnitDisplay();
     }
