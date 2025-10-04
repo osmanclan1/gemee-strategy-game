@@ -200,10 +200,17 @@ class Game {
   }
 
   attackUnit(playerId, attackerId, targetId) {
-    if (this.gameState !== 'playing' || this.currentTurn !== playerId) return false;
+    console.log('Attack attempt:', { playerId, attackerId, targetId, currentTurn: this.currentTurn, gameState: this.gameState });
+    
+    if (this.gameState !== 'playing' || this.currentTurn !== playerId) {
+      console.log('Attack failed: Wrong turn or game state');
+      return false;
+    }
     
     const attacker = this.units.get(attackerId);
     const target = this.units.get(targetId);
+    
+    console.log('Units found:', { attacker: !!attacker, target: !!target, attackerOwner: attacker?.owner, playerId, attackerHasAttacked: attacker?.hasAttacked });
     
     if (!attacker || !target || attacker.owner !== playerId || attacker.hasAttacked) return false;
     
@@ -214,12 +221,22 @@ class Game {
     }
 
     const distance = Math.abs(target.x - attacker.x) + Math.abs(target.y - attacker.y);
-    if (distance > attacker.range) return false;
+    console.log('Attack distance:', { distance, attackerRange: attacker.range, attackerPos: [attacker.x, attacker.y], targetPos: [target.x, target.y] });
+    
+    if (distance > attacker.range) {
+      console.log('Attack failed: Out of range');
+      return false;
+    }
     
     // Check energy cost for attack (2 energy per attack)
     const playerEnergy = this.energy.get(playerId);
     const energyCost = 2; // 2 energy per attack
-    if (playerEnergy < energyCost) return false;
+    console.log('Energy check:', { playerEnergy, energyCost, hasEnoughEnergy: playerEnergy >= energyCost });
+    
+    if (playerEnergy < energyCost) {
+      console.log('Attack failed: Not enough energy');
+      return false;
+    }
     
     // Deduct energy cost
     this.energy.set(playerId, playerEnergy - energyCost);

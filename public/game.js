@@ -211,8 +211,6 @@ class GameClient {
             // Attack enemy unit
             console.log('Attacking enemy unit:', unit.id, 'with attacker:', this.selectedUnit.id);
             this.attackUnit(unit.id);
-            // Don't continue processing - attack is complete
-            return;
         }
         this.updateSelectedUnitDisplay();
     }
@@ -249,8 +247,18 @@ class GameClient {
     }
     
     attackUnit(targetId) {
-        // ... (This method remains unchanged)
         if (!this.selectedUnit) return;
+        
+        console.log('Sending attack:', {
+            attackerId: this.selectedUnit.id,
+            attackerPosition: [this.selectedUnit.x, this.selectedUnit.y],
+            attackerRange: this.selectedUnit.range,
+            attackerHasAttacked: this.selectedUnit.hasAttacked,
+            targetId: targetId,
+            playerEnergy: this.gameState.energy[this.playerId],
+            currentTurn: this.gameState.currentTurn,
+            isMyTurn: this.gameState.currentTurn === this.playerId
+        });
         
         this.socket.emit('attackUnit', {
             attackerId: this.selectedUnit.id,
