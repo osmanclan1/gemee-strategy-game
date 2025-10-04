@@ -291,7 +291,8 @@ class Game {
       }
     }
     
-    this.processTurnBasedCombat();
+    // Remove automatic combat - only manual attacks allowed
+    // this.processTurnBasedCombat();
     
     this.currentTurn = this.currentTurn === this.hostId ? 
       Array.from(this.players.keys()).find(id => id !== this.hostId) : 
@@ -340,22 +341,24 @@ class Game {
   }
 
   checkWinCondition() {
-    // ... (This method remains unchanged from the previous fix)
     const playerIds = Array.from(this.players.keys());
     if (playerIds.length < 2) return;
 
-    const player1 = this.players.get(playerIds[0]);
-    const player2 = this.players.get(playerIds[1]);
-    
     const player1Units = Array.from(this.units.values()).filter(u => u.owner === playerIds[0]);
     const player2Units = Array.from(this.units.values()).filter(u => u.owner === playerIds[1]);
 
-    if (player1Units.length === 0 && player1.hasDeployedUnits) {
-        this.gameState = 'finished';
-        this.winner = playerIds[1];
-    } else if (player2Units.length === 0 && player2.hasDeployedUnits) {
-        this.gameState = 'finished';
-        this.winner = playerIds[0];
+    // Only check win condition after both players have deployed at least one unit
+    const totalUnits = player1Units.length + player2Units.length;
+    if (totalUnits === 0) return;
+
+    if (player1Units.length === 0) {
+      this.gameState = 'finished';
+      this.winner = playerIds[1];
+      this.broadcastGameState();
+    } else if (player2Units.length === 0) {
+      this.gameState = 'finished';
+      this.winner = playerIds[0];
+      this.broadcastGameState();
     }
   }
 
